@@ -5,7 +5,6 @@ from pymongo.mongo_client import MongoClient
 
 
 def connect(username: str, password: str) -> Tuple[MongoClient, Collection]:
-    username = "rag_app"
     cluster = "cluster0.5l4gvzk.mongodb.net"
     connection_string = (
         f"mongodb+srv://{username}:{password}@{cluster}?retryWrites=true&w=majority"
