@@ -1,9 +1,12 @@
 from typing import Dict, List
 
+from streamlit import cache_data
+
 from .connect_db import connect
 from .embedding import get_embedding
 
 
+@cache_data(ttl=600)
 def get_query_results(
     query: str,
     username: str,
