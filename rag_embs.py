@@ -2,7 +2,7 @@ import streamlit as st
 from openai import OpenAI
 from st_social_media_links import SocialMediaIcons
 
-from .utils.prompt import get_query_results, prepare_prompt
+from utils.prompt import get_query_results, prepare_prompt
 
 ## OpenAI stuff
 client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
