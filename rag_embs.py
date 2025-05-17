@@ -11,6 +11,8 @@ if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-4.1-mini"
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "stream" not in st.session_state:
+    st.session_state.stream = None
 
 with st.sidebar.container(border=False):
     st.sidebar.markdown(
@@ -96,11 +98,17 @@ only topic in our library.</div>""",
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
+    # display previous answer here:
+    if st.session_state.stream:
+        with st.chat_message("assistant"):
+            response = st.write_stream(st.session_state.stream)
+            st.session_state.messages.append({"role": "assistant", "content": response})
+
     # Accept user input
     if prompt := st.chat_input("Ask me about vector embeddings..."):
         # Display user message in chat message container
-        with st.chat_message("user"):
-            st.markdown(prompt)
+        # with st.chat_message("user"):
+        #    st.markdown(prompt)
 
         # Add user message to chat history before context
         st.session_state.messages.append({"role": "user", "content": prompt})
@@ -117,17 +125,17 @@ only topic in our library.</div>""",
             prompt = prepare_prompt(prompt, documents)
 
         # Display assistant response in chat message container
-        with st.chat_message("assistant"):
-            stream = client.chat.completions.create(
-                model=st.session_state["openai_model"],
-                messages=[
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.messages
-                ],
-                stream=True,
-            )
-            response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        st.session_state.stream = client.chat.completions.create(
+            model=st.session_state["openai_model"],
+            messages=[
+                {"role": m["role"], "content": m["content"]}
+                for m in st.session_state.messages
+            ],
+            stream=True,
+        )
+        # response = st.write_stream(stream)
+        st.rerun()
+        # st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 with st.container(border=False):
