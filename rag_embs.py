@@ -2,7 +2,7 @@ import streamlit as st
 from openai import OpenAI
 from st_social_media_links import SocialMediaIcons
 
-from utils.prompt import get_query_results, prepare_prompt
+from .utils.prompt import get_query_results, prepare_prompt
 
 ## OpenAI stuff
 client = OpenAI(api_key=st.secrets["OPENAI_KEY"])
@@ -98,8 +98,6 @@ only topic in our library.</div>""",
 
     # Accept user input
     if prompt := st.chat_input("Ask me about vector embeddings..."):
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": prompt})
         # Display user message in chat message container
         with st.chat_message("user"):
             st.markdown(prompt)
@@ -110,17 +108,20 @@ only topic in our library.</div>""",
                 rag_context,
                 username=st.secrets.db_credentials.username,
                 password=st.secrets.db_credentials.password,
-                limit=8,
+                limit=5,
             )
 
             prompt = prepare_prompt(prompt, documents)
+
+        # Add user message to chat history after context
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
             stream = client.chat.completions.create(
                 model=st.session_state["openai_model"],
                 messages=[
-                    {"role": m["role"], "content": prompt}
+                    {"role": m["role"], "content": m["content"]}
                     for m in st.session_state.messages
                 ],
                 stream=True,

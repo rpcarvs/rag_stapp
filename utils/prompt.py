@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from streamlit import cache_data
 
@@ -46,7 +46,7 @@ def get_query_results(
     return [doc for doc in results]
 
 
-def prepare_prompt(question: str, documents: List[Dict] = None) -> str:
+def prepare_prompt(question: str, documents: Union[List[Dict], None] = None) -> str:
     """
     1. run the query
     2. aggregate the returned info/quotes
