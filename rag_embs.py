@@ -102,6 +102,9 @@ only topic in our library.</div>""",
         with st.chat_message("user"):
             st.markdown(prompt)
 
+        # Add user message to chat history before context
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
         # get enhanced prompt
         if rag_context:
             documents = get_query_results(
@@ -112,9 +115,6 @@ only topic in our library.</div>""",
             )
 
             prompt = prepare_prompt(prompt, documents)
-
-        # Add user message to chat history after context
-        st.session_state.messages.append({"role": "user", "content": prompt})
 
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
