@@ -103,13 +103,10 @@ only topic in our library.</div>""",
         with st.chat_message("assistant"):
             response = st.write_stream(st.session_state.stream)
             st.session_state.messages.append({"role": "assistant", "content": response})
+            st.session_state.stream = None
 
     # Accept user input
     if prompt := st.chat_input("Ask me about vector embeddings..."):
-        # Display user message in chat message container
-        # with st.chat_message("user"):
-        #    st.markdown(prompt)
-
         # Add user message to chat history before context
         st.session_state.messages.append({"role": "user", "content": prompt})
 
@@ -133,9 +130,7 @@ only topic in our library.</div>""",
             ],
             stream=True,
         )
-        # response = st.write_stream(stream)
         st.rerun()
-        # st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 with st.container(border=False):
